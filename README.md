@@ -7,11 +7,15 @@
 <!-- ## Requirements -->
 
 ## Known Issues
-not up to date with the language grammar
+no issues
 
 ## Release Notes
-this is the first version of luc language support. this version does not synchronized or up to date with current compiler state and language grammar, this version is mainly for testing, do not use this version for coding
+this is the first version of luc language support.
+> **NOTE:** 
+> this is not an intellisence, but just a simple language support with sippets
 
 ### 0.0.1
 Initial release of luc language support
 
+### 0.1.0
+All syntax and snippets update to date, but some features may not ready, this version is not stable, use it carefully

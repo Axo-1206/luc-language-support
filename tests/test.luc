@@ -27,11 +27,14 @@ let name (param type) returnType = async {
     
 }
 
-pub let main () = {
-    
-}
-
 let test (num int) int, int = {
     return num + 5, 5
 } 
+
+
+export const main () int = {
+    
+    return 0
+}
+
 

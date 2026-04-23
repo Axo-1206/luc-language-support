@@ -1,9 +1,10 @@
 {
 	"name": "luc-language-support",
 	"displayName": "Luc Language Support",
+	"icon": "icon.png",
 	"description": "Syntax highlighting and support for the Luc language",
 	"publisher": "Axo",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Axo-1206/luc-language-support.git"
@@ -26,6 +27,10 @@
 				"extensions": [
 					".luc"
 				],
+				"icon": {
+					"light": "./icons/luc-logo.svg",
+					"dark": "./icons/luc-logo.svg"
+				},
 				"configuration": "./language-configuration.json"
 			}
 		],
