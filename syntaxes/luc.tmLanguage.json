@@ -1,0 +1,364 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "luc",
+	"scopeName": "source.luc",
+	"patterns": [
+		{ "include": "#doc_comments" },
+		{ "include": "#block_comments" },
+		{ "include": "#line_comments" },
+		{ "include": "#strings" },
+		{ "include": "#chars" },
+		{ "include": "#numerics" },
+		{ "include": "#keywords_declaration" },
+		{ "include": "#keywords_module" },
+		{ "include": "#keywords_control" },
+		{ "include": "#keywords_concurrency" },
+		{ "include": "#keywords_logical" },
+		{ "include": "#keywords_constants" },
+		{ "include": "#storage_modifiers" },
+		{ "include": "#type_decl_keywords" },
+		{ "include": "#primitive_types" },
+		{ "include": "#operators_pipeline" },
+		{ "include": "#operators_nullable" },
+		{ "include": "#operators_compound_assign" },
+		{ "include": "#operators_comparison" },
+		{ "include": "#operators_bitwise" },
+		{ "include": "#operators_arithmetic" },
+		{ "include": "#operators_misc" },
+		{ "include": "#punctuation" }
+	],
+	"repository": {
+
+		"doc_comments": {
+			"comment": "Doc block comment: /-- ... --/  Must come before block_comments — both start with /-",
+			"name": "comment.block.documentation.luc",
+			"begin": "/--",
+			"end": "--/"
+		},
+
+		"block_comments": {
+			"comment": "Plain block comment: /- ... -/",
+			"name": "comment.block.luc",
+			"begin": "/-",
+			"end": "-/"
+		},
+
+		"line_comments": {
+			"comment": "Single-line comment: -- ...",
+			"name": "comment.line.double-dash.luc",
+			"match": "--.*$"
+		},
+
+		"strings": {
+			"patterns": [
+				{
+					"comment": "Raw string literal: r\"...\" — no escape processing, backslashes are literal",
+					"name": "string.quoted.other.raw.luc",
+					"begin": "r\"",
+					"end": "\""
+				},
+				{
+					"comment": "Regular string literal: \"...\" with escape sequences",
+					"name": "string.quoted.double.luc",
+					"begin": "\"",
+					"end": "\"",
+					"patterns": [
+						{
+							"comment": "Unicode escape: \\UXXXXXXXX (8 hex digits, full codepoint)",
+							"name": "constant.character.escape.unicode.long.luc",
+							"match": "\\\\U[0-9a-fA-F]{8}"
+						},
+						{
+							"comment": "Unicode escape: \\uXXXX (4 hex digits, BMP codepoint)",
+							"name": "constant.character.escape.unicode.luc",
+							"match": "\\\\u[0-9a-fA-F]{4}"
+						},
+						{
+							"comment": "Hex byte escape: \\xHH",
+							"name": "constant.character.escape.hex.luc",
+							"match": "\\\\x[0-9a-fA-F]{2}"
+						},
+						{
+							"comment": "Standard single-char escapes: \\n \\t \\r \\\\ \\\" \\' \\0",
+							"name": "constant.character.escape.luc",
+							"match": "\\\\[ntr\\\\\"'0]"
+						},
+						{
+							"comment": "Unrecognised escape — surfaces as an error",
+							"name": "invalid.illegal.escape.luc",
+							"match": "\\\\."
+						}
+					]
+				}
+			]
+		},
+
+		"chars": {
+			"comment": "Char literal: 'a'  '\\n'  '\\x41'  '\\u0041'",
+			"name": "string.quoted.single.luc",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "constant.character.escape.unicode.luc",
+					"match": "\\\\u[0-9a-fA-F]{4}"
+				},
+				{
+					"name": "constant.character.escape.hex.luc",
+					"match": "\\\\x[0-9a-fA-F]{2}"
+				},
+				{
+					"name": "constant.character.escape.luc",
+					"match": "\\\\[ntr\\\\\"'0]"
+				}
+			]
+		},
+
+		"numerics": {
+			"patterns": [
+				{
+					"comment": "Hex literal: 0xFF  0xDEAD_BEEF",
+					"name": "constant.numeric.hex.luc",
+					"match": "\\b0[xX][0-9a-fA-F][0-9a-fA-F_]*\\b"
+				},
+				{
+					"comment": "Binary literal: 0b1010  0b1111_0000",
+					"name": "constant.numeric.binary.luc",
+					"match": "\\b0[bB][01][01_]*\\b"
+				},
+				{
+					"comment": "Float with optional exponent: 3.14  1.5e-3  1_000.0",
+					"name": "constant.numeric.float.luc",
+					"match": "\\b\\d[\\d_]*\\.[\\d_]*([eE][+\\-]?\\d[\\d_]*)?\\b"
+				},
+				{
+					"comment": "Float exponent without decimal point: 1e10",
+					"name": "constant.numeric.float.luc",
+					"match": "\\b\\d[\\d_]*[eE][+\\-]?\\d[\\d_]*\\b"
+				},
+				{
+					"comment": "Integer literal: 42  1_000_000",
+					"name": "constant.numeric.integer.luc",
+					"match": "\\b\\d[\\d_]*\\b"
+				}
+			]
+		},
+
+		"keywords_declaration": {
+			"comment": "Variable / function declaration keywords: let imt val",
+			"name": "keyword.declaration.luc",
+			"match": "\\b(let|imt|val)\\b"
+		},
+
+		"keywords_module": {
+			"comment": "Module-system keywords: package module use as",
+			"name": "keyword.other.module.luc",
+			"match": "\\b(package|module|use|as)\\b"
+		},
+
+		"keywords_control": {
+			"comment": "Control-flow keywords",
+			"name": "keyword.control.luc",
+			"match": "\\b(if|else|match|switch|case|default|is|while|for|in|do|return|break|continue)\\b"
+		},
+
+		"keywords_concurrency": {
+			"comment": "Concurrency keywords: async await parallel",
+			"name": "keyword.control.concurrency.luc",
+			"match": "\\b(async|await|parallel)\\b"
+		},
+
+		"keywords_logical": {
+			"comment": "Word-form logical operators: and or not",
+			"name": "keyword.operator.logical.luc",
+			"match": "\\b(and|or|not)\\b"
+		},
+
+		"keywords_constants": {
+			"comment": "Language-level constants: true false nil",
+			"name": "constant.language.luc",
+			"match": "\\b(true|false|nil)\\b"
+		},
+
+		"storage_modifiers": {
+			"comment": "Visibility / FFI modifiers: pub extern",
+			"name": "storage.modifier.luc",
+			"match": "\\b(pub|extern)\\b"
+		},
+
+		"type_decl_keywords": {
+			"comment": "Type-declaration keywords: struct enum trait type impl from",
+			"name": "keyword.declaration.type.luc",
+			"match": "\\b(struct|enum|trait|type|impl|from)\\b"
+		},
+
+		"primitive_types": {
+			"comment": "Built-in primitive type names",
+			"name": "support.type.primitive.luc",
+			"match": "\\b(bool|byte|short|int|long|ubyte|ushort|uint|ulong|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|decimal|string|char|any)\\b"
+		},
+
+		"operators_pipeline": {
+			"patterns": [
+				{
+					"comment": "Composition operator +> — compile-time function wiring; must be matched before plain +",
+					"name": "keyword.operator.compose.luc",
+					"match": "\\+>"
+				},
+				{
+					"comment": "Pipeline operator -> — runtime left-to-right execution; must be matched before plain -",
+					"name": "keyword.operator.pipeline.luc",
+					"match": "->"
+				}
+			]
+		},
+
+		"operators_nullable": {
+			"patterns": [
+				{
+					"comment": "Nil-coalescing fallback: ??  (must be matched before single ?)",
+					"name": "keyword.operator.nullcoalesce.luc",
+					"match": "\\?\\?"
+				},
+				{
+					"comment": "Nullable chain: .?  (must be matched before plain . and plain ?)",
+					"name": "keyword.operator.nullchain.luc",
+					"match": "\\.\\?"
+				},
+				{
+					"comment": "Nullable type suffix: ?",
+					"name": "keyword.operator.nullable.luc",
+					"match": "\\?"
+				}
+			]
+		},
+
+		"operators_compound_assign": {
+			"comment": "Compound assignment operators: += -= *= /= ^= %=  (must be matched before plain = and arithmetic)",
+			"name": "keyword.operator.assignment.compound.luc",
+			"match": "(\\+=|-=|\\*=|/=|\\^=|%=)"
+		},
+
+		"operators_comparison": {
+			"comment": "Comparison / equality: == != <= >= < >  (must be matched before plain = and < >)",
+			"name": "keyword.operator.comparison.luc",
+			"match": "(==|!=|<=|>=|<|>)"
+		},
+
+		"operators_bitwise": {
+			"patterns": [
+				{
+					"comment": "Bit XOR: ~^  (must be matched before plain ~)",
+					"name": "keyword.operator.bitwise.xor.luc",
+					"match": "~\\^"
+				},
+				{
+					"comment": "Left shift: <<  (must be matched before plain <)",
+					"name": "keyword.operator.bitwise.shift.left.luc",
+					"match": "<<"
+				},
+				{
+					"comment": "Right shift: >>  (must be matched before plain >)",
+					"name": "keyword.operator.bitwise.shift.right.luc",
+					"match": ">>"
+				},
+				{
+					"comment": "Bitwise NOT / complement: ~",
+					"name": "keyword.operator.bitwise.not.luc",
+					"match": "~"
+				}
+			]
+		},
+
+		"operators_arithmetic": {
+			"comment": "Arithmetic operators: + - * / % ^  (plain forms, after compound/pipeline/bitwise already matched)",
+			"name": "keyword.operator.arithmetic.luc",
+			"match": "(\\+|-|\\*|/|%|\\^)"
+		},
+
+		"operators_misc": {
+			"patterns": [
+				{
+					"comment": "Variadic parameter marker: ...  (must be matched before ..)",
+					"name": "keyword.operator.variadic.luc",
+					"match": "\\.\\.\\."
+				},
+				{
+					"comment": "Range literal: ..  (must be matched before plain .)",
+					"name": "keyword.operator.range.luc",
+					"match": "\\.\\."
+				},
+				{
+					"comment": "Raw pointer sigil / unsafe bit-reinterpret prefix: @",
+					"name": "keyword.operator.pointer.luc",
+					"match": "@"
+				},
+				{
+					"comment": "Safe reference type prefix: &",
+					"name": "keyword.operator.reference.luc",
+					"match": "&"
+				},
+				{
+					"comment": "Union type separator (also bitwise OR in expression context): |",
+					"name": "keyword.operator.union.luc",
+					"match": "\\|"
+				},
+				{
+					"comment": "Argument-pack annotation on a pipeline step: fn(args)!",
+					"name": "keyword.operator.pack.luc",
+					"match": "!"
+				},
+				{
+					"comment": "Plain assignment: =  (after compound assignments already matched)",
+					"name": "keyword.operator.assignment.luc",
+					"match": "="
+				},
+				{
+					"comment": "Wildcard pattern in match: _  (standalone, not part of an identifier)",
+					"name": "variable.language.wildcard.luc",
+					"match": "\\b_\\b"
+				}
+			]
+		},
+
+		"punctuation": {
+			"patterns": [
+				{
+					"comment": "Behavior-member / impl-namespace access, generic constraint, match field pattern: :",
+					"name": "punctuation.accessor.impl.luc",
+					"match": ":"
+				},
+				{
+					"comment": "Data-member access and module-path separator: .  (after .? and .. already matched)",
+					"name": "punctuation.accessor.dot.luc",
+					"match": "\\."
+				},
+				{
+					"comment": "Comma — optional separator throughout the language",
+					"name": "punctuation.separator.comma.luc",
+					"match": ","
+				},
+				{
+					"comment": "Semicolon — optional separator throughout the language",
+					"name": "punctuation.separator.semicolon.luc",
+					"match": ";"
+				},
+				{
+					"comment": "Block delimiters: { }",
+					"name": "punctuation.definition.block.luc",
+					"match": "[{}]"
+				},
+				{
+					"comment": "Group / parameter-list delimiters: ( )",
+					"name": "punctuation.definition.group.luc",
+					"match": "[()]"
+				},
+				{
+					"comment": "Array / index delimiters: [ ]",
+					"name": "punctuation.definition.array.luc",
+					"match": "[\\[\\]]"
+				}
+			]
+		}
+	}
+}

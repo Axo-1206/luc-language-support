@@ -1,0 +1,37 @@
+package test
+
+struct Rectagle {
+    test string
+}
+
+pub trait Shape {
+    area () int    
+}
+
+pub impl Rectagle : Shape {
+    area () int, string {
+        return 5, "test";
+    }
+}
+
+
+type ID = int
+
+let name int = 5 
+
+let name (param type) returnType = {
+    
+}
+
+let name (param type) returnType = async {
+    
+}
+
+pub let main () = {
+    
+}
+
+let test (num int) int, int = {
+    return num + 5, 5
+} 
+

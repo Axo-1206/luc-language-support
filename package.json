@@ -1,0 +1,46 @@
+{
+	"name": "luc-language-support",
+	"displayName": "Luc Language Support",
+	"description": "Syntax highlighting and support for the Luc language",
+	"publisher": "Axo",
+	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Axo-1206/luc-language-support.git"
+	},
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.80.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"contributes": {
+		"languages": [
+			{
+				"id": "luc",
+				"aliases": [
+					"Luc",
+					"luc"
+				],
+				"extensions": [
+					".luc"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "luc",
+				"scopeName": "source.luc",
+				"path": "./syntaxes/luc.tmLanguage.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "luc",
+				"path": "./snippets/luc.json"
+			}
+		]
+	}
+}

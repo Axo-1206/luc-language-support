@@ -1,0 +1,506 @@
+{
+	"Package declaration": {
+		"prefix": "package",
+		"body": ["package ${1:name}"],
+		"description": "Declare the package name (first line of every .luc file)"
+	},
+
+	"Use import": {
+		"prefix": "use",
+		"body": ["use ${1:module}"],
+		"description": "Import a module"
+	},
+
+	"Use import with alias": {
+		"prefix": "useas",
+		"body": ["use ${1:module} as ${2:alias}"],
+		"description": "Import a module with a local alias"
+	},
+
+	"Module manifest": {
+		"prefix": "module",
+		"body": [
+			"module ${1:name} {",
+			"\tuse ${1:name}.${2:file}",
+			"\t${0}",
+			"}"
+		],
+		"description": "Module manifest — curated public API re-export"
+	},
+
+
+
+	"Let declaration": {
+		"prefix": "let",
+		"body": ["let ${1:name} ${2:type} = ${0}"],
+		"description": "Reassignable, mutable, nil-allowed variable"
+	},
+
+	"Imt declaration": {
+		"prefix": "imt",
+		"body": ["imt ${1:name} ${2:type} = ${0}"],
+		"description": "Immutable binding — not reassignable, not mutable in place"
+	},
+
+	"Val declaration": {
+		"prefix": "val",
+		"body": ["val ${1:name} ${2:type} = ${0}"],
+		"description": "Fully immutable — nil forbidden anywhere in the type tree"
+	},
+
+
+
+
+	"Function declaration": {
+		"prefix": "fn",
+		"body": [
+			"let ${1:name} (${2:param} ${3:type}) ${4:returnType} = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Basic function declaration"
+	},
+
+	"Function declaration — no return": {
+		"prefix": "fnv",
+		"body": [
+			"let ${1:name} (${2:param} ${3:type}) = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Function with no return value"
+	},
+
+	"Function declaration — nullable return": {
+		"prefix": "fnn",
+		"body": [
+			"let ${1:name} (${2:param} ${3:type}) ${4:returnType}? = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Function that may return nil"
+	},
+
+	"Curried function — two groups": {
+		"prefix": "fnc",
+		"body": [
+			"let ${1:name} (${2:a} ${3:typeA}) (${4:b} ${5:typeB}) ${6:returnType} = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Curried function with two parameter groups"
+	},
+
+	"Async function": {
+		"prefix": "fna",
+		"body": [
+			"let ${1:name} (${2:param} ${3:type}) ${4:returnType} = async {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Async function declaration"
+	},
+
+	"Anonymous function": {
+		"prefix": "anon",
+		"body": ["(${1:param} ${2:type}) ${3:returnType} {", "\t${0}", "}"],
+		"description": "Anonymous function expression"
+	},
+
+	"Anonymous function — no return": {
+		"prefix": "anonv",
+		"body": ["(${1:param} ${2:type}) {", "\t${0}", "}"],
+		"description": "Anonymous function with no return value"
+	},
+
+
+
+
+	"Struct declaration": {
+		"prefix": "struct",
+		"body": [
+			"struct ${1:Name} {",
+			"\t${2:field} ${3:type}",
+			"\t${0}",
+			"}"
+		],
+		"description": "Struct data definition"
+	},
+
+	"Pub struct declaration": {
+		"prefix": "pstruct",
+		"body": [
+			"pub struct ${1:Name} {",
+			"\t${2:field} ${3:type}",
+			"\t${0}",
+			"}"
+		],
+		"description": "Public struct data definition"
+	},
+
+	"Generic struct declaration": {
+		"prefix": "structg",
+		"body": [
+			"struct ${1:Name}<${2:T}> {",
+			"\t${3:field} ${2:T}",
+			"\t${0}",
+			"}"
+		],
+		"description": "Generic struct declaration"
+	},
+
+	"Enum declaration": {
+		"prefix": "enum",
+		"body": [
+			"enum ${1:Name} {",
+			"\t${2:Variant}",
+			"\t${0}",
+			"}"
+		],
+		"description": "Named integer-backed enum"
+	},
+
+	"Pub enum declaration": {
+		"prefix": "penum",
+		"body": [
+			"pub enum ${1:Name} {",
+			"\t${2:Variant}",
+			"\t${0}",
+			"}"
+		],
+		"description": "Public named integer-backed enum"
+	},
+
+	"Trait declaration": {
+		"prefix": "trait",
+		"body": [
+			"pub trait ${1:Name} {",
+			"\t${2:method} (${3:param} ${4:type}) ${5:returnType}",
+			"\t${0}",
+			"}"
+		],
+		"description": "Trait — pure method contract, no bodies"
+	},
+
+	"Type alias": {
+		"prefix": "type",
+		"body": ["type ${1:Name} = ${0}"],
+		"description": "Type alias"
+	},
+
+	"Pub type alias": {
+		"prefix": "ptype",
+		"body": ["pub type ${1:Name} = ${0}"],
+		"description": "Public type alias"
+	},
+
+
+
+
+	"Pub impl block": {
+		"prefix": "impl",
+		"body": [
+			"pub impl ${1:Type} {",
+			"\t${2:method} (${3:param} ${4:type}) ${5:returnType} = {",
+			"\t\t${0}",
+			"\t}",
+			"}"
+		],
+		"description": "Public impl block — methods callable externally"
+	},
+
+	"Private impl block": {
+		"prefix": "implp",
+		"body": [
+			"impl ${1:Type} {",
+			"\t${2:method} (${3:param} ${4:type}) ${5:returnType} = {",
+			"\t\t${0}",
+			"\t}",
+			"}"
+		],
+		"description": "Private impl block — methods callable within package only"
+	},
+
+	"Impl with trait conformance": {
+		"prefix": "implt",
+		"body": [
+			"pub impl ${1:Type} : ${2:Trait} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Impl block declaring trait conformance"
+	},
+
+	"Impl method": {
+		"prefix": "method",
+		"body": [
+			"${1:name} (${2:param} ${3:type}) ${4:returnType} = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Method inside an impl block"
+	},
+
+	"From conversion": {
+		"prefix": "from",
+		"body": [
+			"from (${1:src} ${2:SourceType}) ${3:TargetType} = {",
+			"\treturn ${3:TargetType} { ${0} }",
+			"}"
+		],
+		"description": "Type conversion — from(SourceType) inside pub impl"
+	},
+
+
+
+
+	"If statement": {
+		"prefix": "if",
+		"body": [
+			"if ${1:condition} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "If statement"
+	},
+
+	"If / else statement": {
+		"prefix": "ife",
+		"body": [
+			"if ${1:condition} {",
+			"\t${2}",
+			"} else {",
+			"\t${0}",
+			"}"
+		],
+		"description": "If / else statement"
+	},
+
+	"If expression": {
+		"prefix": "ifx",
+		"body": ["if ${1:condition} { ${2:trueVal} } else { ${3:falseVal} }"],
+		"description": "If / else as an expression — both branches must return the same type"
+	},
+
+	"Match expression": {
+		"prefix": "match",
+		"body": [
+			"match ${1:value} {",
+			"\t${2:pattern} -> ${3:result}",
+			"\tdefault     -> ${0}",
+			"}"
+		],
+		"description": "Match expression — default arm required"
+	},
+
+	"Match — type dispatch": {
+		"prefix": "matcht",
+		"body": [
+			"match ${1:value} {",
+			"\t${2:v} is ${3:TypeA} -> ${4}",
+			"\t${5:v} is ${6:TypeB} -> ${7}",
+			"\tdefault             -> ${0}",
+			"}"
+		],
+		"description": "Match with type patterns — v is Type"
+	},
+
+	"Match — bind with guard": {
+		"prefix": "matchg",
+		"body": [
+			"match ${1:value} {",
+			"\t${2:n} if ${3:condition} -> ${4}",
+			"\t${2:n}                   -> ${5}",
+			"\tdefault                  -> ${0}",
+			"}"
+		],
+		"description": "Match with bind pattern and guard"
+	},
+
+	"Switch statement": {
+		"prefix": "switch",
+		"body": [
+			"switch ${1:value} {",
+			"\tcase ${2:val}: { ${3} }",
+			"\tdefault:       { ${0} }",
+			"}"
+		],
+		"description": "Switch statement — no fallthrough, side-effect dispatch"
+	},
+
+
+
+	"For-in loop": {
+		"prefix": "for",
+		"body": [
+			"for ${1:item} in ${2:collection} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "For-in loop over a collection"
+	},
+
+	"For range loop": {
+		"prefix": "forr",
+		"body": [
+			"for ${1:i} in ${2:0}..${3:n} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "For loop over a range"
+	},
+
+	"While loop": {
+		"prefix": "while",
+		"body": [
+			"while ${1:condition} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "While loop"
+	},
+
+	"Do-while loop": {
+		"prefix": "do",
+		"body": [
+			"do {",
+			"\t${0}",
+			"} while ${1:condition}"
+		],
+		"description": "Do-while loop — body executes at least once"
+	},
+
+
+
+	"Parallel for": {
+		"prefix": "parfor",
+		"body": [
+			"parallel for ${1:item} in ${2:collection} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Data-parallel iteration — each element processed independently"
+	},
+
+	"Parallel block": {
+		"prefix": "par",
+		"body": [
+			"parallel {",
+			"\t{ ${1} }",
+			"\t{ ${2} }",
+			"\t{ ${0} }",
+			"}"
+		],
+		"description": "Task-parallel block — all sub-blocks run concurrently"
+	},
+
+
+
+	"Result return type": {
+		"prefix": "result",
+		"body": ["Result<${1:Type}>"],
+		"description": "Result<T> return type — T or Error"
+	},
+
+	"Return error": {
+		"prefix": "reterr",
+		"body": [
+			"return Error {",
+			"\tmessage = \"${1:message}\"",
+			"\tcode    = int(${2:ErrorCode.Unknown})",
+			"}"
+		],
+		"description": "Return an Error value"
+	},
+
+	"Catch handler": {
+		"prefix": "catch",
+		"body": [
+			".catch((${1:e} Error) ${2:Type} {",
+			"\t${0}",
+			"\treturn ${3:fallback}",
+			"})"
+		],
+		"description": ".catch error handler"
+	},
+
+	"Nil fallback (??)": {
+		"prefix": "??",
+		"body": ["${1:expr} ?? ${0}"],
+		"description": "Nil-coalescing fallback operator"
+	},
+
+
+
+	"Pipeline": {
+		"prefix": "pipe",
+		"body": ["${1:seed} -> ${2:step} -> ${0}"],
+		"description": "Runtime pipeline — left-to-right execution"
+	},
+
+	"Composition": {
+		"prefix": "compose",
+		"body": ["${1:f} +> ${2:g} +> ${0}"],
+		"description": "Compile-time function composition"
+	},
+
+
+
+	"Doc comment block": {
+		"prefix": "doc",
+		"body": [
+			"/--",
+			" - ${1:Description}",
+			" -",
+			" - ${0}",
+			"--/"
+		],
+		"description": "Block documentation comment /-- ... --/"
+	},
+
+	"Doc comment — single line": {
+		"prefix": "--",
+		"body": ["-- ${0}"],
+		"description": "Single-line comment"
+	},
+
+
+	
+	"Main function": {
+		"prefix": "main",
+		"body": [
+			"let main () = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Program entry point"
+	},
+
+	"Pub main function": {
+		"prefix": "pmain",
+		"body": [
+			"pub let main () = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Public program entry point"
+	},
+
+	"Nullable chain": {
+		"prefix": ".?",
+		"body": ["${1:expr}.?${2:field}.?${3:field} ?? ${0}"],
+		"description": "Nullable chain — must be terminated with ??"
+	},
+
+	"Struct literal": {
+		"prefix": "lit",
+		"body": ["${1:Type} { ${2:field} = ${0} }"],
+		"description": "Struct literal"
+	},
+
+	"Extern declaration": {
+		"prefix": "extern",
+		"body": ["extern let ${1:name} (${2:param} ${3:@type}) ${4:returnType}"],
+		"description": "Extern C / Vulkan FFI declaration"
+	}
+}
