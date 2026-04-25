@@ -9,7 +9,7 @@ Initial release of luc language support
 
 ### 0.1.0
 All syntax and snippets update to date, but some features may not ready, this version is not stable, use it carefully
-NOTE: DO NOT USE THIS VERSION, THIS VERSION IS CORRUPTED, USE 0.1.1 INSTEAD
+NOTE: DO NOT USE THIS VERSION, THIS VERSION IS CORRUPTED, USE 0.1.1 INSTEAD, i have deleted this version, don't border search for this version
 
 ### 0.1.1
 All syntax and snippets update to date, but some features may not ready, this version is not stable, use it carefully, improved icon design, and icon color usage
