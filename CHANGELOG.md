@@ -13,3 +13,7 @@ NOTE: DO NOT USE THIS VERSION, THIS VERSION IS CORRUPTED, USE 0.1.1 INSTEAD, i h
 
 ### 0.1.1
 All syntax and snippets update to date, but some features may not ready, this version is not stable, use it carefully, improved icon design, and icon color usage
+
+### 0.2.0
+
+All syntax and snippets update to date with grammar (05/2026)

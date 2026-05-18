@@ -58,11 +58,11 @@
 	"Function declaration": {
 		"prefix": "fn",
 		"body": [
-			"let ${1:name} (${2:param} ${3:type}) ${4:returnType} = {",
+			"let ${1:name} (${2:param} ${3:type}) -> ${4:returnType} = {",
 			"\t${0}",
 			"}"
 		],
-		"description": "Basic function declaration"
+		"description": "Function with a return value. Use -> to separate params from return type."
 	},
 	"Function declaration — no return": {
 		"prefix": "fnv",
@@ -71,50 +71,86 @@
 			"\t${0}",
 			"}"
 		],
-		"description": "Function with no return value"
+		"description": "Void function — omit -> entirely when there is no return value"
 	},
 	"Function declaration — nullable return": {
 		"prefix": "fnnr",
 		"body": [
-			"let ${1:name} (${2:param} ${3:type}) ${4:returnType}? = {",
+			"let ${1:name} (${2:param} ${3:type}) -> ${4:returnType}? = {",
 			"\t${0}",
 			"}"
 		],
-		"description": "Function that may return nil"
+		"description": "Function that may return nil — ? suffix on the return type"
 	},
-	"Nullable function variable": {
+	"Nullable function binding": {
 		"prefix": "fnn",
 		"body": [
-			"let ${1:name} ((${2:param} ${3:type}) ${4:returnType})? = ${0:nil}"
+			"let ${1:name} ~nullable (${2:param} ${3:type}) -> ${4:returnType} = ${0:nil}"
 		],
-		"description": "Variable holding a nullable function"
+		"description": "Variable holding a nullable function — qualifier is ~nullable on the binding"
+	},
+	"Async function declaration": {
+		"prefix": "fna",
+		"body": [
+			"let ${1:name} ~async (${2:param} ${3:type}) -> ${4:returnType} = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Async function — ~async qualifier before the first parameter group. Call site must use await."
 	},
 	"Curried function — two groups": {
 		"prefix": "fnc",
 		"body": [
-			"let ${1:name} (${2:a} ${3:typeA}) (${4:b} ${5:typeB}) ${6:returnType} = {",
+			"let ${1:name} (${2:a} ${3:typeA}) (${4:b} ${5:typeB}) -> ${6:returnType} = {",
 			"\t${0}",
 			"}"
 		],
-		"description": "Curried function with two parameter groups"
+		"description": "Curried function with two parameter groups. Each () group is one call step."
 	},
-	"Async function": {
-		"prefix": "fna",
+	"Generic function": {
+		"prefix": "fng",
 		"body": [
-			"let ${1:name} (${2:param} ${3:type}) ${4:returnType} = async {",
+			"let ${1:name}<${2:T}> (${3:param} ${2:T}) -> ${2:T} = {",
 			"\t${0}",
 			"}"
 		],
-		"description": "Async function declaration"
+		"description": "Generic function — type parameter immediately after the function name"
+	},
+	"Generic function with constraint": {
+		"prefix": "fngc",
+		"body": [
+			"let ${1:name}<${2:T} : ${3:Trait}> (${4:param} ${2:T}) -> ${5:returnType} = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Generic function with trait constraint: T : Trait"
+	},
+	"Exported function": {
+		"prefix": "exfn",
+		"body": [
+			"export const ${1:name} (${2:param} ${3:type}) -> ${4:returnType} = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Exported function (world-public)"
+	},
+	"Pub function": {
+		"prefix": "pfn",
+		"body": [
+			"pub let ${1:name} (${2:param} ${3:type}) -> ${4:returnType} = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Package-public function"
 	},
 	"Anonymous function": {
 		"prefix": "anon",
 		"body": [
-			"(${1:param} ${2:type}) ${3:returnType} {",
+			"(${1:param} ${2:type}) -> ${3:returnType} {",
 			"\t${0}",
 			"}"
 		],
-		"description": "Anonymous function expression"
+		"description": "Anonymous function expression — no qualifiers on the value itself"
 	},
 	"Anonymous function — no return": {
 		"prefix": "anonv",
@@ -125,6 +161,15 @@
 		],
 		"description": "Anonymous function with no return value"
 	},
+	"Anonymous function — curried": {
+		"prefix": "anonc",
+		"body": [
+			"(${1:a} ${2:typeA}) (${3:b} ${4:typeB}) -> ${5:returnType} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Curried anonymous function — multiple parameter groups"
+	},
 	"Struct declaration": {
 		"prefix": "struct",
 		"body": [
@@ -133,7 +178,7 @@
 			"\t${0}",
 			"}"
 		],
-		"description": "Struct data definition"
+		"description": "Private struct data definition"
 	},
 	"Public struct declaration": {
 		"prefix": "pstruct",
@@ -165,6 +210,23 @@
 		],
 		"description": "Generic struct declaration"
 	},
+	"Struct with default field values": {
+		"prefix": "structd",
+		"body": [
+			"struct ${1:Name} {",
+			"\t${2:field} ${3:type} = ${4:default}",
+			"\t${0}",
+			"}"
+		],
+		"description": "Struct with a default field value: field type = expr"
+	},
+	"Struct literal": {
+		"prefix": "lit",
+		"body": [
+			"${1:Type} { ${2:field} = ${0} }"
+		],
+		"description": "Struct literal — always uses = for field initialisation, never :"
+	},
 	"Enum declaration": {
 		"prefix": "enum",
 		"body": [
@@ -173,7 +235,7 @@
 			"\t${0}",
 			"}"
 		],
-		"description": "Named integer-backed enum"
+		"description": "Named integer-backed enum — variants accessed as EnumName.Variant"
 	},
 	"Public enum declaration": {
 		"prefix": "penum",
@@ -183,24 +245,34 @@
 			"\t${0}",
 			"}"
 		],
-		"description": "Package-public named integer-backed enum"
+		"description": "Package-public enum"
+	},
+	"Enum with explicit values": {
+		"prefix": "enume",
+		"body": [
+			"enum ${1:Name} {",
+			"\t${2:Variant} = ${3:0x01}",
+			"\t${0}",
+			"}"
+		],
+		"description": "Enum with explicit integer values — useful for bitmasks (Vulkan flags)"
 	},
 	"Trait declaration": {
 		"prefix": "trait",
 		"body": [
 			"export trait ${1:Name} {",
-			"\t${2:method} (${3:param} ${4:type}) ${5:returnType}",
+			"\t${2:method} (${3:param} ${4:type}) -> ${5:returnType}",
 			"\t${0}",
 			"}"
 		],
-		"description": "Trait — pure method contract, no bodies"
+		"description": "Trait — pure method signatures, no bodies, no fields"
 	},
 	"Type alias": {
 		"prefix": "type",
 		"body": [
 			"type ${1:Name} = ${0}"
 		],
-		"description": "Type alias"
+		"description": "Type alias — does not create a new nominal type"
 	},
 	"Pub type alias": {
 		"prefix": "ptype",
@@ -209,18 +281,32 @@
 		],
 		"description": "Package-public type alias"
 	},
-	"Export type alias": {
+	"Exported type alias": {
 		"prefix": "extype",
 		"body": [
 			"export type ${1:Name} = ${0}"
 		],
 		"description": "World-public type alias"
 	},
+	"Type alias — function type": {
+		"prefix": "typefn",
+		"body": [
+			"type ${1:Name} = (${2:param} ${3:type}) -> ${4:returnType}"
+		],
+		"description": "Type alias for a function type"
+	},
+	"Type alias — async function type": {
+		"prefix": "typefna",
+		"body": [
+			"type ${1:Name} = ~async (${2:param} ${3:type}) -> ${4:returnType}"
+		],
+		"description": "Type alias for an async function type — qualifier is part of the type"
+	},
 	"Impl block": {
 		"prefix": "impl",
 		"body": [
 			"impl ${1:Type} {",
-			"\t${2:method} (${3:param} ${4:type}) ${5:returnType} = {",
+			"\t${2:method} (${3:param} ${4:type}) -> ${5:returnType} = {",
 			"\t\t${0}",
 			"\t}",
 			"}"
@@ -231,7 +317,7 @@
 		"prefix": "pimpl",
 		"body": [
 			"pub impl ${1:Type} {",
-			"\t${2:method} (${3:param} ${4:type}) ${5:returnType} = {",
+			"\t${2:method} (${3:param} ${4:type}) -> ${5:returnType} = {",
 			"\t\t${0}",
 			"\t}",
 			"}"
@@ -242,7 +328,7 @@
 		"prefix": "eximpl",
 		"body": [
 			"export impl ${1:Type} {",
-			"\t${2:method} (${3:param} ${4:type}) ${5:returnType} = {",
+			"\t${2:method} (${3:param} ${4:type}) -> ${5:returnType} = {",
 			"\t\t${0}",
 			"\t}",
 			"}"
@@ -256,18 +342,65 @@
 			"\t${0}",
 			"}"
 		],
-		"description": "Impl block declaring trait conformance"
+		"description": "Impl block declaring trait conformance: impl Type : Trait { ... }"
+	},
+	"Generic impl block": {
+		"prefix": "implg",
+		"body": [
+			"pub impl ${1:Type}<${2:T} : ${3:Trait}> {",
+			"\t${4:method} (${5:param} ${2:T}) -> ${6:returnType} = {",
+			"\t\t${0}",
+			"\t}",
+			"}"
+		],
+		"description": "Generic impl block — type parameter immediately after the struct name"
+	},
+	"Impl method — void": {
+		"prefix": "mth",
+		"body": [
+			"${1:method} (${2:param} ${3:type}) = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Void impl method body"
+	},
+	"Impl method — with return": {
+		"prefix": "mthr",
+		"body": [
+			"${1:method} (${2:param} ${3:type}) -> ${4:returnType} = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Impl method with a return type"
+	},
+	"Impl method — async": {
+		"prefix": "mtha",
+		"body": [
+			"${1:method} ~async (${2:param} ${3:type}) -> ${4:returnType} = {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Async impl method — ~async qualifier before the parameter group"
 	},
 	"From conversion block": {
 		"prefix": "from",
 		"body": [
 			"export from ${1:TargetType} {",
-			"\t${2:label} (${3:src} ${4:SourceType}) ${1:TargetType} = {",
+			"\t(${2:src} ${3:SourceType}) -> ${1:TargetType} = {",
 			"\t\treturn ${1:TargetType} { ${0} }",
 			"\t}",
 			"}"
 		],
-		"description": "Type conversion entry points for a named struct"
+		"description": "From block — defines implicit conversions to TargetType. Entry: (src SourceType) -> TargetType = { ... }"
+	},
+	"From entry": {
+		"prefix": "fromentry",
+		"body": [
+			"(${1:src} ${2:SourceType}) -> ${3:TargetType} = {",
+			"\treturn ${3:TargetType} { ${0} }",
+			"}"
+		],
+		"description": "Single from conversion entry inside a from block"
 	},
 	"If statement": {
 		"prefix": "if",
@@ -289,30 +422,51 @@
 		],
 		"description": "If / else statement"
 	},
-	"If expression": {
+	"If expression (inline)": {
 		"prefix": "ifx",
 		"body": [
 			"if ${1:condition} ?? ${2:trueVal} else ${3:falseVal}"
 		],
-		"description": "Inline if expression — condition ?? trueVal else falseVal"
+		"description": "Inline if expression — if cond ?? trueVal else falseVal. Both branches required."
 	},
 	"Match expression": {
 		"prefix": "match",
 		"body": [
 			"match ${1:value} {",
-			"\t${2:pattern} -> ${3:result}",
-			"\tdefault     -> ${0}",
+			"\t${2:pattern} => ${3:result}",
+			"\tdefault     => ${0}",
 			"}"
 		],
-		"description": "Match expression — default arm required"
+		"description": "Match expression — arms use =>, default arm is required and must be last"
+	},
+	"Match — multiple patterns per arm": {
+		"prefix": "matchm",
+		"body": [
+			"match ${1:value} {",
+			"\t${2:a}, ${3:b} => ${4:result}",
+			"\tdefault        => ${0}",
+			"}"
+		],
+		"description": "Match arm with multiple comma-separated patterns"
+	},
+	"Match — range pattern": {
+		"prefix": "matchr",
+		"body": [
+			"match ${1:value} {",
+			"\t${2:0}..${3:10}    => ${4:result}",
+			"\t${5:11}..<${6:50} => ${7:result}",
+			"\tdefault           => ${0}",
+			"}"
+		],
+		"description": "Match with inclusive (..) and exclusive (..<) range patterns"
 	},
 	"Match — type dispatch": {
 		"prefix": "matcht",
 		"body": [
 			"match ${1:value} {",
-			"\t${2:v} is ${3:TypeA} -> ${4}",
-			"\t${5:v} is ${6:TypeB} -> ${7}",
-			"\tdefault             -> ${0}",
+			"\t${2:v} is ${3:TypeA} => ${4:result}",
+			"\t${5:v} is ${6:TypeB} => ${7:result}",
+			"\tdefault              => ${0}",
 			"}"
 		],
 		"description": "Match with type patterns — v is Type"
@@ -321,12 +475,23 @@
 		"prefix": "matchg",
 		"body": [
 			"match ${1:value} {",
-			"\t${2:n} if ${3:condition} -> ${4}",
-			"\t${2:n}                  -> ${5}",
-			"\tdefault                 -> ${0}",
+			"\t${2:n} if ${3:n} < ${4:0}  => ${5:result}",
+			"\t${2:n}                      => ${6:result}",
+			"\tdefault                     => ${0}",
 			"}"
 		],
-		"description": "Match with bind pattern and guard"
+		"description": "Match with bind pattern and guard: n if condition => result"
+	},
+	"Match — struct destructuring": {
+		"prefix": "matchs",
+		"body": [
+			"match ${1:value} {",
+			"\t${2:Type} { ${3:field}: ${4:pattern} } => ${5:result}",
+			"\t${2:Type} { ${3:field} }               => ${6:result}",
+			"\tdefault                                 => ${0}",
+			"}"
+		],
+		"description": "Match with struct destructuring pattern: Type { field: subPattern }"
 	},
 	"Switch statement": {
 		"prefix": "switch",
@@ -336,7 +501,18 @@
 			"\tdefault:       { ${0} }",
 			"}"
 		],
-		"description": "Switch statement — no fallthrough, side-effect dispatch"
+		"description": "Switch statement — no fallthrough, for statement-oriented dispatch"
+	},
+	"Switch — multiple values per case": {
+		"prefix": "switchm",
+		"body": [
+			"switch ${1:value} {",
+			"\tcase ${2:a}, ${3:b}: { ${4} }",
+			"\tcase ${5:c}..${6:d}: { ${7} }",
+			"\tdefault:              { ${0} }",
+			"}"
+		],
+		"description": "Switch with multiple values and range per case"
 	},
 	"For-in loop": {
 		"prefix": "for",
@@ -347,14 +523,14 @@
 		],
 		"description": "For-in loop over a collection"
 	},
-	"For range loop": {
+	"For range loop (inclusive)": {
 		"prefix": "forr",
 		"body": [
 			"for ${1:i} in ${2:0}..${3:n} {",
 			"\t${0}",
 			"}"
 		],
-		"description": "For loop over an inclusive range"
+		"description": "For loop over inclusive range — 0..n includes both endpoints"
 	},
 	"For range loop (exclusive)": {
 		"prefix": "forre",
@@ -363,7 +539,25 @@
 			"\t${0}",
 			"}"
 		],
-		"description": "For loop over an exclusive range"
+		"description": "For loop over exclusive range — 0..<n excludes n"
+	},
+	"For range loop (with step)": {
+		"prefix": "fors",
+		"body": [
+			"for ${1:i} in ${2:0}..${3:n}..${4:2} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "For loop with explicit step: start..end..step"
+	},
+	"For range loop (typed iterator)": {
+		"prefix": "forrt",
+		"body": [
+			"for ${1:i} ${2:int} in ${3:0}..${4:n} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "For loop with explicit iterator type annotation"
 	},
 	"While loop": {
 		"prefix": "while",
@@ -372,7 +566,7 @@
 			"\t${0}",
 			"}"
 		],
-		"description": "While loop"
+		"description": "While loop — condition checked before each iteration"
 	},
 	"Do-while loop": {
 		"prefix": "do",
@@ -383,73 +577,70 @@
 		],
 		"description": "Do-while loop — body executes at least once"
 	},
-	"Parallel for": {
-		"prefix": "parfor",
+	"Await expression": {
+		"prefix": "await",
 		"body": [
-			"parallel for ${1:item} in ${2:collection} {",
-			"\t${0}",
-			"}"
+			"await ${0}"
 		],
-		"description": "Data-parallel iteration — each element processed independently"
+		"description": "Await an async call — only valid inside a ~async function body"
 	},
-	"Parallel block": {
-		"prefix": "par",
+	"Async function call": {
+		"prefix": "awaitcall",
 		"body": [
-			"parallel {",
-			"\t{ ${1} }",
-			"\t{ ${2} }",
-			"\t{ ${0} }",
-			"}"
+			"let ${1:result} ${2:type} = await ${3:asyncFn}(${0})"
 		],
-		"description": "Task-parallel block — all sub-blocks run concurrently"
-	},
-	"Result return type": {
-		"prefix": "result",
-		"body": [
-			"Result<${1:Type}>"
-		],
-		"description": "Result<T> return type — T or Error"
-	},
-	"Return error": {
-		"prefix": "reterr",
-		"body": [
-			"return Error {",
-			"\tmessage = \"${1:message}\"",
-			"\tcode    = int(${2:ErrorCode.Unknown})",
-			"}"
-		],
-		"description": "Return an Error value"
-	},
-	"Catch handler": {
-		"prefix": "catch",
-		"body": [
-			".catch((${1:e} Error) ${2:Type} {",
-			"\t${0}",
-			"\treturn ${3:fallback}",
-			"})"
-		],
-		"description": ".catch error handler"
+		"description": "Call an ~async function and store the result"
 	},
 	"Nil fallback (??)": {
 		"prefix": "??",
 		"body": [
 			"${1:expr} ?? ${0}"
 		],
-		"description": "Nil-coalescing fallback operator"
+		"description": "Nil-coalescing fallback — returns RHS when LHS is nil"
+	},
+	"Nullable chain": {
+		"prefix": ".?",
+		"body": [
+			"${1:expr}?.${2:field}?.${3:field} ?? ${0}"
+		],
+		"description": "Nullable chain — ?. steps must be terminated with ??"
+	},
+	"Nil guard": {
+		"prefix": "nilguard",
+		"body": [
+			"if ${1:value} != nil {",
+			"\t${0}",
+			"}"
+		],
+		"description": "Guard against nil before using a nullable value"
 	},
 	"Pipeline": {
 		"prefix": "pipe",
 		"body": [
-			"${1:seed} -> ${2:step} -> ${0}"
+			"${1:seed} |> ${2:step} |> ${0}"
 		],
-		"description": "Runtime pipeline — left-to-right execution"
+		"description": "Runtime pipeline operator |> — executes left-to-right"
+	},
+	"Pipeline step — argument pack": {
+		"prefix": "pack",
+		"body": [
+			"${1:fn}(${2:args})!"
+		],
+		"description": "Argument pack step in a pipeline — ! means upstream is injected as first arg"
+	},
+	"Pipeline step — method": {
+		"prefix": "pipem",
+		"body": [
+			"${1:Type}:${2:method}"
+		],
+		"description": "Impl method reference as a pipeline step — Type:method"
 	},
 	"Composition": {
 		"prefix": "compose",
 		"body": [
 			"${1:f} +> ${2:g} +> ${0}"
 		],
-		"description": "Compile-time function composition"
+		"description": "Compile-time function composition +> — output type of left must match input of right"
 	},
 	"Doc comment block": {
 		"prefix": "doc",
@@ -472,40 +663,224 @@
 	"Main function": {
 		"prefix": "main",
 		"body": [
-			"export const main () int = {",
+			"export const main () -> int = {",
 			"\t${0}",
 			"\treturn 0",
 			"}"
 		],
-		"description": "Program entry point"
+		"description": "Program entry point — must be export const, must return int"
 	},
-	"Nullable chain": {
-		"prefix": ".?",
+	"Main function — with args": {
+		"prefix": "mainargs",
 		"body": [
-			"${1:expr}.?${2:field}.?${3:field} ?? ${0}"
+			"export const main (args []string) -> int = {",
+			"\t${0}",
+			"\treturn 0",
+			"}"
 		],
-		"description": "Nullable chain — must be terminated with ??"
+		"description": "Program entry point with command-line arguments"
 	},
-	"Struct literal": {
-		"prefix": "lit",
+	"AOT main": {
+		"prefix": "mainaot",
 		"body": [
-			"${1:Type} { ${2:field} = ${0} }"
+			"@aot",
+			"export const main () -> int = {",
+			"\t${0}",
+			"\treturn 0",
+			"}"
 		],
-		"description": "Struct literal"
+		"description": "AOT main — ahead-of-time compilation. @aot and @jit are mutually exclusive."
 	},
-	"Extern declaration": {
+	"JIT main": {
+		"prefix": "mainjit",
+		"body": [
+			"@jit",
+			"export const main () -> int = {",
+			"\t${0}",
+			"\treturn 0",
+			"}"
+		],
+		"description": "JIT main — just-in-time compilation via LLVM. @aot and @jit are mutually exclusive."
+	},
+	"Extern declaration — function": {
 		"prefix": "extern",
 		"body": [
 			"@extern(\"${1:symbol}\")",
-			"const ${2:name} (${3:params}) ${4:returnType}"
+			"const ${2:name} (${3:params}) -> ${4:returnType}"
 		],
-		"description": "Extern C / OS / Vulkan FFI declaration"
+		"description": "Extern C/OS/Vulkan FFI function — requires const, no body"
+	},
+	"Extern declaration — with calling convention": {
+		"prefix": "externcc",
+		"body": [
+			"@extern(\"${1:symbol}\", \"${2:C}\")",
+			"const ${2:name} (${3:params}) -> ${4:returnType}"
+		],
+		"description": "Extern function with explicit calling convention"
+	},
+	"Extern declaration — variable": {
+		"prefix": "externvar",
+		"body": [
+			"@extern(\"${1:symbol}\")",
+			"const ${2:name} ${3:type}"
+		],
+		"description": "Extern variable (e.g. __stack_top)"
 	},
 	"Attribute": {
 		"prefix": "attr",
 		"body": [
 			"@${1:name}"
 		],
-		"description": "Declaration attribute or intrinsic"
+		"description": "Declaration attribute: @inline @noinline @packed @deprecated"
+	},
+	"Deprecated attribute": {
+		"prefix": "deprecated",
+		"body": [
+			"@deprecated(\"${1:Use replacement instead}\")"
+		],
+		"description": "@deprecated attribute — emits a warning at every use site"
+	},
+	"Packed struct attribute": {
+		"prefix": "packed",
+		"body": [
+			"@packed",
+			"struct ${1:Name} {",
+			"\t${0}",
+			"}"
+		],
+		"description": "@packed struct — removes padding, all fields byte-adjacent (useful for Vulkan layouts)"
+	},
+	"Sizeof intrinsic": {
+		"prefix": "#sizeof",
+		"body": [
+			"#sizeof(${1:Type})"
+		],
+		"description": "#sizeof(T) — compile-time byte size of type T, returns uint64"
+	},
+	"Alignof intrinsic": {
+		"prefix": "#alignof",
+		"body": [
+			"#alignof(${1:Type})"
+		],
+		"description": "#alignof(T) — compile-time alignment of type T, returns uint64"
+	},
+	"Sqrt intrinsic": {
+		"prefix": "#sqrt",
+		"body": [
+			"#sqrt(${1:x})"
+		],
+		"description": "#sqrt(x) — hardware-accelerated square root; x must be float or double"
+	},
+	"Memcpy intrinsic": {
+		"prefix": "#memcpy",
+		"body": [
+			"#memcpy(${1:dst}, ${2:src}, ${3:len})"
+		],
+		"description": "#memcpy(dst, src, len) — copy bytes, regions must not overlap"
+	},
+	"Memset intrinsic": {
+		"prefix": "#memset",
+		"body": [
+			"#memset(${1:dst}, ${2:0}, ${3:len})"
+		],
+		"description": "#memset(dst, value, len) — fill bytes with value"
+	},
+	"PtrToRef intrinsic": {
+		"prefix": "#ptrToRef",
+		"body": [
+			"#ptrToRef(${1:ptr})"
+		],
+		"description": "#ptrToRef(ptr) — cross the sealed conduit boundary: *T → &T"
+	},
+	"RefToPtr intrinsic": {
+		"prefix": "#refToPtr",
+		"body": [
+			"#refToPtr(${1:ref})"
+		],
+		"description": "#refToPtr(ref) — convert safe reference back to raw pointer: &T → *T"
+	},
+	"PtrOffset intrinsic": {
+		"prefix": "#ptrOffset",
+		"body": [
+			"#ptrOffset(${1:ptr}, ${2:n})"
+		],
+		"description": "#ptrOffset(ptr, n) — pointer arithmetic, returns ptr + n elements"
+	},
+	"Bitcast intrinsic": {
+		"prefix": "#bitcast",
+		"body": [
+			"#bitcast(${1:Type}, ${2:value})"
+		],
+		"description": "#bitcast(T, x) — reinterpret bits of x as type T; sizes must match"
+	},
+	"Fma intrinsic": {
+		"prefix": "#fma",
+		"body": [
+			"#fma(${1:a}, ${2:b}, ${3:c})"
+		],
+		"description": "#fma(a, b, c) — fused multiply-add: (a * b) + c, single rounding"
+	},
+	"Min intrinsic": {
+		"prefix": "#min",
+		"body": [
+			"#min(${1:a}, ${2:b})"
+		],
+		"description": "#min(a, b) — minimum of two values; both must be the same type"
+	},
+	"Max intrinsic": {
+		"prefix": "#max",
+		"body": [
+			"#max(${1:a}, ${2:b})"
+		],
+		"description": "#max(a, b) — maximum of two values; both must be the same type"
+	},
+	"Array — fixed": {
+		"prefix": "arrf",
+		"body": [
+			"let ${1:name} [${2:4}]${3:float} = [${0}]"
+		],
+		"description": "Fixed-size array: [N]T — stack-allocated, size is part of the type"
+	},
+	"Array — slice": {
+		"prefix": "arrs",
+		"body": [
+			"let ${1:name} []${2:int} = ${0}"
+		],
+		"description": "Slice: []T — non-owning fat-pointer view (ptr + len + cap)"
+	},
+	"Array — dynamic": {
+		"prefix": "arrd",
+		"body": [
+			"let ${1:name} [*]${2:int} = [${0}]"
+		],
+		"description": "Dynamic array: [*]T — heap-owned, growable"
+	},
+	"Slice expression (inclusive)": {
+		"prefix": "slice",
+		"body": [
+			"${1:arr}[${2:start}..${3:end}]"
+		],
+		"description": "Inclusive slice — arr[start..end] includes both start and end"
+	},
+	"Slice expression (exclusive)": {
+		"prefix": "slicex",
+		"body": [
+			"${1:arr}[${2:start}..<${3:end}]"
+		],
+		"description": "Exclusive slice — arr[start..<end] excludes end"
+	},
+	"Multiple assignment — declaration": {
+		"prefix": "letmulti",
+		"body": [
+			"let ${1:a} ${2:int}, ${3:b} ${4:string} = ${0}"
+		],
+		"description": "Multi-variable declaration — every variable needs its own type annotation"
+	},
+	"Multiple assignment — reassignment": {
+		"prefix": "assignmulti",
+		"body": [
+			"${1:a}, ${2:b} = ${0}"
+		],
+		"description": "Multi-assignment to existing variables — RHS must be a single expression"
 	}
 }

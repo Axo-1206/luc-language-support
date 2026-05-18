@@ -31,9 +31,6 @@
 			"include": "#keywords_control"
 		},
 		{
-			"include": "#keywords_concurrency"
-		},
-		{
 			"include": "#keywords_logical"
 		},
 		{
@@ -49,10 +46,22 @@
 			"include": "#primitive_types"
 		},
 		{
+			"include": "#qualifiers"
+		},
+		{
+			"include": "#intrinsics"
+		},
+		{
+			"include": "#attributes"
+		},
+		{
 			"include": "#operators_pipeline"
 		},
 		{
 			"include": "#operators_nullable"
+		},
+		{
+			"include": "#operators_compound_assign_bitwise"
 		},
 		{
 			"include": "#operators_compound_assign"
@@ -68,9 +77,6 @@
 		},
 		{
 			"include": "#operators_misc"
-		},
-		{
-			"include": "#attributes"
 		},
 		{
 			"include": "#punctuation"
@@ -97,16 +103,52 @@
 		"strings": {
 			"patterns": [
 				{
-					"comment": "Raw string literal: r\"...\"",
+					"comment": "Raw string with hash delimiters: r##\"...\"## (match before plain r\")",
+					"name": "string.quoted.other.raw.luc",
+					"begin": "r#+\"",
+					"end": "\"#+",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.luc"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.luc"
+						}
+					}
+				},
+				{
+					"comment": "Raw string literal: r\"...\" (no escape processing)",
 					"name": "string.quoted.other.raw.luc",
 					"begin": "r\"",
-					"end": "\""
+					"end": "\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.luc"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.luc"
+						}
+					}
 				},
 				{
 					"comment": "Regular string literal: \"...\" with escape sequences",
 					"name": "string.quoted.double.luc",
 					"begin": "\"",
 					"end": "\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.luc"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.luc"
+						}
+					},
 					"patterns": [
 						{
 							"comment": "Unicode escape: \\UXXXXXXXX (8 hex digits)",
@@ -144,6 +186,10 @@
 			"end": "'",
 			"patterns": [
 				{
+					"name": "constant.character.escape.unicode.long.luc",
+					"match": "\\\\U[0-9a-fA-F]{8}"
+				},
+				{
 					"name": "constant.character.escape.unicode.luc",
 					"match": "\\\\u[0-9a-fA-F]{4}"
 				},
@@ -160,12 +206,12 @@
 		"numerics": {
 			"patterns": [
 				{
-					"comment": "Hex literal: 0xFF",
+					"comment": "Hex literal: 0xFF  0xDEAD_BEEF",
 					"name": "constant.numeric.hex.luc",
 					"match": "\\b0[xX][0-9a-fA-F][0-9a-fA-F_]*\\b"
 				},
 				{
-					"comment": "Binary literal: 0b1010",
+					"comment": "Binary literal: 0b1010  0b1111_0000",
 					"name": "constant.numeric.binary.luc",
 					"match": "\\b0[bB][01][01_]*\\b"
 				},
@@ -180,7 +226,7 @@
 					"match": "\\b\\d[\\d_]*[eE][+\\-]?\\d[\\d_]*\\b"
 				},
 				{
-					"comment": "Integer literal: 42",
+					"comment": "Integer literal: 42  1_000_000",
 					"name": "constant.numeric.integer.luc",
 					"match": "\\b\\d[\\d_]*\\b"
 				}
@@ -197,14 +243,9 @@
 			"match": "\\b(package|use|as)\\b"
 		},
 		"keywords_control": {
-			"comment": "Control-flow keywords",
+			"comment": "Control-flow keywords (await is concurrency, not a qualifier)",
 			"name": "keyword.control.luc",
-			"match": "\\b(if|else|match|switch|case|default|is|while|for|in|do|return|break|continue)\\b"
-		},
-		"keywords_concurrency": {
-			"comment": "Concurrency keywords: async await parallel",
-			"name": "keyword.control.concurrency.luc",
-			"match": "\\b(async|await|parallel)\\b"
+			"match": "\\b(if|else|match|switch|case|default|is|while|for|in|do|return|break|continue|await)\\b"
 		},
 		"keywords_logical": {
 			"comment": "Word-form logical operators: and or not",
@@ -217,7 +258,7 @@
 			"match": "\\b(true|false|nil)\\b"
 		},
 		"storage_modifiers": {
-			"comment": "Visibility / Scope modifiers: pub export",
+			"comment": "Visibility / scope modifiers: pub export",
 			"name": "storage.modifier.luc",
 			"match": "\\b(pub|export)\\b"
 		},
@@ -231,31 +272,77 @@
 			"name": "support.type.primitive.luc",
 			"match": "\\b(bool|byte|short|int|long|ubyte|ushort|uint|ulong|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|decimal|string|char|any)\\b"
 		},
+		"qualifiers": {
+			"comment": "Type qualifiers: ~async ~nullable ~parallel (tilde + identifier)",
+			"match": "(~)(async|nullable|parallel)\\b",
+			"captures": {
+				"1": {
+					"name": "keyword.operator.qualifier.sigil.luc"
+				},
+				"2": {
+					"name": "keyword.other.qualifier.luc"
+				}
+			}
+		},
+		"intrinsics": {
+			"comment": "Compiler intrinsics: #name(...)",
+			"match": "(#)([a-zA-Z_][a-zA-Z0-9_]*)",
+			"captures": {
+				"1": {
+					"name": "keyword.operator.intrinsic.sigil.luc"
+				},
+				"2": {
+					"name": "support.function.intrinsic.luc"
+				}
+			}
+		},
+		"attributes": {
+			"comment": "Declaration attributes: @name or @name(args)",
+			"match": "(@)([a-zA-Z_][a-zA-Z0-9_]*)",
+			"captures": {
+				"1": {
+					"name": "keyword.operator.attribute.sigil.luc"
+				},
+				"2": {
+					"name": "entity.name.attribute.luc"
+				}
+			}
+		},
 		"operators_pipeline": {
 			"patterns": [
 				{
-					"comment": "Composition operator +>",
+					"comment": "Composition operator: +>  (compile-time, must match before +)",
 					"name": "keyword.operator.compose.luc",
 					"match": "\\+>"
 				},
 				{
-					"comment": "Pipeline operator ->",
+					"comment": "Pipeline operator: |>  (runtime, must match before |)",
 					"name": "keyword.operator.pipeline.luc",
+					"match": "\\|>"
+				},
+				{
+					"comment": "Return boundary / arrow: ->  (must match before - and >)",
+					"name": "keyword.operator.arrow.luc",
 					"match": "->"
+				},
+				{
+					"comment": "Fat arrow: =>  (match arm body separator, must match before =)",
+					"name": "keyword.operator.fat-arrow.luc",
+					"match": "=>"
 				}
 			]
 		},
 		"operators_nullable": {
 			"patterns": [
 				{
-					"comment": "Nil-coalescing fallback or inline-if separator: ??",
+					"comment": "Nil-coalescing / if-expression separator: ??  (must match before ?)",
 					"name": "keyword.operator.nullcoalesce.luc",
 					"match": "\\?\\?"
 				},
 				{
-					"comment": "Nullable chain: .?  (must be matched before plain .)",
+					"comment": "Nullable chain accessor: ?.  (must match before ? and .)",
 					"name": "keyword.operator.nullchain.luc",
-					"match": "\\.\\?"
+					"match": "\\?\\."
 				},
 				{
 					"comment": "Nullable type suffix: ?",
@@ -264,54 +351,93 @@
 				}
 			]
 		},
+		"operators_compound_assign_bitwise": {
+			"comment": "Bitwise compound assignment (must match before plain bitwise ops): &&= ||= ~^= <<= >>=",
+			"name": "keyword.operator.assignment.compound.bitwise.luc",
+			"match": "(&&=|\\|\\|=|~\\^=|<<=|>>=)"
+		},
 		"operators_compound_assign": {
-			"comment": "Compound assignment operators: += -= *= /= ^= %=",
+			"comment": "Arithmetic compound assignment: += -= *= /= ^= %=",
 			"name": "keyword.operator.assignment.compound.luc",
 			"match": "(\\+=|-=|\\*=|/=|\\^=|%=)"
 		},
 		"operators_comparison": {
-			"comment": "Comparison / equality: == != <= >= < >",
-			"name": "keyword.operator.comparison.luc",
-			"match": "(==|!=|<=|>=|<|>)"
+			"patterns": [
+				{
+					"comment": "Reference equality: ===  (must match before ==)",
+					"name": "keyword.operator.comparison.reference.luc",
+					"match": "==="
+				},
+				{
+					"comment": "Value equality / inequality: == !=",
+					"name": "keyword.operator.comparison.equality.luc",
+					"match": "(==|!=)"
+				},
+				{
+					"comment": "Ordered comparison: <= >=  (must match before < and >)",
+					"name": "keyword.operator.comparison.ordered.luc",
+					"match": "(<=|>=)"
+				},
+				{
+					"comment": "Less-than / greater-than: < >",
+					"name": "keyword.operator.comparison.luc",
+					"match": "(<|>)"
+				}
+			]
 		},
 		"operators_bitwise": {
 			"patterns": [
 				{
-					"comment": "Bit XOR: ~^",
+					"comment": "Bitwise NOT (double tilde): ~~  (must match before ~ qualifier prefix)",
+					"name": "keyword.operator.bitwise.not.luc",
+					"match": "~~"
+				},
+				{
+					"comment": "Bitwise AND: &&  (must match before bare & reference operator)",
+					"name": "keyword.operator.bitwise.and.luc",
+					"match": "&&"
+				},
+				{
+					"comment": "Bitwise OR: ||  (must match before | pipeline separator)",
+					"name": "keyword.operator.bitwise.or.luc",
+					"match": "\\|\\|"
+				},
+				{
+					"comment": "Bitwise XOR: ~^  (must match before ~ qualifier prefix)",
 					"name": "keyword.operator.bitwise.xor.luc",
 					"match": "~\\^"
 				},
 				{
-					"comment": "Left shift: <<",
+					"comment": "Left shift: <<  (must match before <)",
 					"name": "keyword.operator.bitwise.shift.left.luc",
 					"match": "<<"
 				},
 				{
-					"comment": "Right shift: >>",
+					"comment": "Right shift: >>  (must match before >)",
 					"name": "keyword.operator.bitwise.shift.right.luc",
 					"match": ">>"
-				},
-				{
-					"comment": "Bitwise NOT / complement: ~",
-					"name": "keyword.operator.bitwise.not.luc",
-					"match": "~"
 				}
 			]
 		},
 		"operators_arithmetic": {
-			"comment": "Arithmetic operators: + - * / % ^",
+			"comment": "Arithmetic: + - * / % ^",
 			"name": "keyword.operator.arithmetic.luc",
 			"match": "(\\+|-|\\*|/|%|\\^)"
 		},
 		"operators_misc": {
 			"patterns": [
 				{
-					"comment": "Variadic parameter marker: ...",
+					"comment": "Argument-pack annotation: !  (pipeline step marker, must match before !=)",
+					"name": "keyword.operator.pack.luc",
+					"match": "!"
+				},
+				{
+					"comment": "Variadic parameter marker: ...  (must match before ..)",
 					"name": "keyword.operator.variadic.luc",
 					"match": "\\.\\.\\."
 				},
 				{
-					"comment": "Exclusive range operator: ..< (must be matched before ..)",
+					"comment": "Exclusive range operator: ..<  (must match before ..)",
 					"name": "keyword.operator.range.exclusive.luc",
 					"match": "\\.\\.<"
 				},
@@ -321,27 +447,17 @@
 					"match": "\\.\\."
 				},
 				{
-					"comment": "Attribute / Intrinsic sigil: @ (standalone)",
-					"name": "keyword.operator.attribute.luc",
-					"match": "@"
-				},
-				{
-					"comment": "Safe reference type prefix: &",
+					"comment": "Safe reference type / take-reference: &",
 					"name": "keyword.operator.reference.luc",
 					"match": "&"
 				},
 				{
-					"comment": "Union type separator / bitwise OR: |",
-					"name": "keyword.operator.union.luc",
+					"comment": "Bitwise-OR / pipe separator: |  (lone pipe, after |> and || matched)",
+					"name": "keyword.operator.pipe.luc",
 					"match": "\\|"
 				},
 				{
-					"comment": "Argument-pack annotation: !",
-					"name": "keyword.operator.pack.luc",
-					"match": "!"
-				},
-				{
-					"comment": "Plain assignment: =",
+					"comment": "Plain assignment: =  (after ==, ===, =>, +=, etc. already matched)",
 					"name": "keyword.operator.assignment.luc",
 					"match": "="
 				},
@@ -351,18 +467,6 @@
 					"match": "\\b_\\b"
 				}
 			]
-		},
-		"attributes": {
-			"comment": "Attributes and Intrinsics: @name",
-			"match": "(@)([a-zA-Z_][a-zA-Z0-9_]*)",
-			"captures": {
-				"1": {
-					"name": "keyword.operator.attribute.luc"
-				},
-				"2": {
-					"name": "variable.other.attribute.luc"
-				}
-			}
 		},
 		"punctuation": {
 			"patterns": [
@@ -382,7 +486,7 @@
 					"match": ","
 				},
 				{
-					"comment": "Semicolon separator",
+					"comment": "Semicolon separator (optional in Luc)",
 					"name": "punctuation.separator.semicolon.luc",
 					"match": ";"
 				},
@@ -392,12 +496,12 @@
 					"match": "[{}]"
 				},
 				{
-					"comment": "Group delimiters: ( )",
+					"comment": "Group / parameter delimiters: ( )",
 					"name": "punctuation.definition.group.luc",
 					"match": "[()]"
 				},
 				{
-					"comment": "Array delimiters: [ ]",
+					"comment": "Array / generic / index delimiters: [ ]",
 					"name": "punctuation.definition.array.luc",
 					"match": "[\\[\\]]"
 				}
